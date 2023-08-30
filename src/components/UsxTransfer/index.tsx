@@ -26,7 +26,11 @@ function UsxTransfer({ maxWidth, jsonRpcUrlMap }: IUsxTrasfer) {
 	// const [successMessage, setSuccessMessage] = useState<string>("");
 	// const [errorMessage, setErrorMessage] = useState<string>("");
 	// const [amountInput, setAmountInput] = useState<string>("");
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [amount, setAmount] = useState<bigint>(BigInt(0));
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [destinationAddress, setDestinationAddress] = useState<string>("");
 	// const [usxBalance, setUsxBalance] = useState<number>(0);
 

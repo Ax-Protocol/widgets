@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ******************************************************* */
+/* NOTE: Custom colors are defined in tailwind.config.js   */
+/*       Default theme is defined in src/context/theme.tsx */
+/* ******************************************************* */

@@ -35,7 +35,7 @@ The only required prop is `jsonRpcUrlMap`. If `maxWidth` or `theme` are not prov
 -   `maxWidth`: Optional number to define a custom maximum width, in pixels.
 -   `theme`: Optional object of properties to set custom styling.
 
-Note that the minimum width of the widget is `300px`.
+**Note:** The minimum width of the widget is `300px`.
 
 ```jsx
 import { UsxTransferWidget } from "@ax-protocol/widgets";
@@ -77,3 +77,7 @@ const Home = () => {
 
 export default Home;
 ```
+
+## License
+
+This project is released under the MIT License - see the [LICENSE.md](https://github.com/Ax-Protocol/widgets/blob/main/LICENSE.md) file for details.

@@ -4,7 +4,7 @@ import iconLedger from "../assets/images/iconLedger.svg";
 import iconMetamask from "../assets/images/iconMetamask.svg";
 import iconSafe from "../assets/images/iconSafe.png";
 import iconWalletConnect from "../assets/images/iconWalletConnect.svg";
-import { Ecosystem, Wallet, WalletType } from "../redux/types";
+import { Ecosystem, Wallet, WalletType } from "../interfaces/state/wallet";
 
 export const walletList: Wallet[] = [
 	{

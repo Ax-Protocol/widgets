@@ -7,30 +7,42 @@ const json = require("@rollup/plugin-json");
 const typescript = require("@rollup/plugin-typescript");
 const postcss = require("rollup-plugin-postcss");
 const dts = require("rollup-plugin-dts").default;
+const babel = require("@rollup/plugin-babel");
+const nodePolyfills = require("rollup-plugin-node-polyfills");
 const packageJson = require("./package.json");
 
 module.exports = [
 	{
-		input: "./src/index.tsx",
+		input: "./src/index.ts",
 		output: [
 			{
 				file: packageJson.main,
 				format: "cjs",
 				sourcemap: true,
+				inlineDynamicImports: true,
 			},
 			{
 				file: packageJson.module,
 				format: "esm",
 				sourcemap: true,
+				inlineDynamicImports: true,
 			},
 		],
+		external: (id) =>
+			["worker_threads"].includes(id) || id.includes("node_modules"),
 		plugins: [
-			external(), // Do not export peerDependencies
+			external(),
 			resolve(),
 			commonjs(),
 			image(),
 			json(),
+			nodePolyfills(),
 			typescript({ tsconfig: "./tsconfig.json" }),
+			babel({
+				babelHelpers: "bundled",
+				external: [".js", ".jsx", ".ts", ".tsx"],
+				exclude: "node_modules/**",
+			}),
 			postcss({
 				config: {
 					path: "./postcss.config.js",

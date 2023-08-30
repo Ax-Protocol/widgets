@@ -14,8 +14,15 @@ module.exports = {
 		},
 		"import/resolver": {
 			node: {
-				extensions: [".js", ".jsx", ".ts", ".tsx"],
+				extensions: [".json", ".js", ".jsx", ".ts", ".tsx", ".d.ts"],
 			},
+			typescript: {
+				alwaysTryTypes: true,
+				project: "tsconfig.json",
+			},
+		},
+		"import/parsers": {
+			"@typescript-eslint/parser": [".ts", ".tsx"],
 		},
 	},
 	extends: [
@@ -34,6 +41,7 @@ module.exports = {
 	rules: {
 		"no-console": ["warn"],
 		"prettier/prettier": "error",
+		"import/no-unresolved": "error",
 		"simple-import-sort/imports": "error",
 		"simple-import-sort/exports": "error",
 		"@typescript-eslint/no-shadow": "error",
@@ -42,6 +50,7 @@ module.exports = {
 		"react/button-has-type": "off",
 		"class-methods-use-this": "off",
 		"import/prefer-default-export": "off",
+		radix: "off",
 		"react/jsx-filename-extension": [
 			2,
 			{ extensions: [".js", ".jsx", ".ts", ".tsx"] },

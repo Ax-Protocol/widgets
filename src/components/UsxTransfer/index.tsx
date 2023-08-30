@@ -2,14 +2,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { ThemeContext } from "../../context/theme";
-import { updateRpcUrlMap } from "../../redux/rpc/rpcActions";
-import { RootState } from "../../redux/types";
+import { IUsxTrasfer } from "../../interfaces/components/usxTransfer";
+import { RootState } from "../../interfaces/state/rootState";
+import { ThemeContext } from "../../state/context/theme";
+import { updateRpcUrlMap } from "../../state/redux/rpc/rpcActions";
 import { checkJsonRpcUrlMapLength } from "../../utils/checkRpcUrlMap";
 import ConnectWalletDropdown from "../ConnectWalletDropdown";
 import Footer from "../Footer";
+import Header from "../Header";
 import TransferButton from "../TransferButton";
-import { IUsxTrasfer } from "./types";
 
 function UsxTransfer({ maxWidth, jsonRpcUrlMap }: IUsxTrasfer) {
 	const {
@@ -17,14 +18,15 @@ function UsxTransfer({ maxWidth, jsonRpcUrlMap }: IUsxTrasfer) {
 		// currentNetwork,
 		// address,
 		// currentEcosystem,
-		nativeBalance,
+		// nativeBalance,
 	} = useSelector((state: RootState) => state.walletReducer);
 	const dispatch = useDispatch();
 	const theme = useContext(ThemeContext);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	// const [successMessage, setSuccessMessage] = useState<string>("");
 	// const [errorMessage, setErrorMessage] = useState<string>("");
-	const [amount, setAmount] = useState<string>("");
+	// const [amountInput, setAmountInput] = useState<string>("");
+	const [amount, setAmount] = useState<bigint>(BigInt(0));
 	const [destinationAddress, setDestinationAddress] = useState<string>("");
 	// const [usxBalance, setUsxBalance] = useState<number>(0);
 
@@ -36,10 +38,6 @@ function UsxTransfer({ maxWidth, jsonRpcUrlMap }: IUsxTrasfer) {
 
 			// If no error is thrown, dispatch the update action
 			dispatch(updateRpcUrlMap(jsonRpcUrlMap));
-
-			console.log("jsonRpcUrlMap: ", jsonRpcUrlMap);
-			console.log("maxWidth: ", maxWidth);
-			console.log("theme: ", theme);
 		} catch (error) {
 			if (error instanceof Error) {
 				console.error(error.message);
@@ -66,13 +64,14 @@ function UsxTransfer({ maxWidth, jsonRpcUrlMap }: IUsxTrasfer) {
 				}}
 				className="flex w-full flex-shrink flex-col items-center justify-center rounded-xl p-5 ring-1"
 			>
+				<Header />
 				{isWalletConnected ? (
 					<TransferButton
 						action={initiateTransfer}
 						isLoading={isLoading}
-						amount={Number(amount)}
+						amount={amount}
 						maxAmount={3} // usxBalance
-						nativeBalance={nativeBalance}
+						// nativeBalance={BigInt(nativeBalance!.value)}
 						// destinationChain={}
 						destinationAddress={destinationAddress}
 					/>

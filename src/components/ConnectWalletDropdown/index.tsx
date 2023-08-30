@@ -2,10 +2,11 @@ import { Menu, Transition } from "@headlessui/react";
 import React, { useContext } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-import { ThemeContext } from "../../context/theme";
 import { walletList } from "../../data/wallets";
-import { getWalletService } from "../../resources/serviceFetcher";
-import { IConnectWalletDropdown } from "./types";
+import { IConnectWalletDropdown } from "../../interfaces/components/connectWalletDropdown";
+import { Wallet } from "../../interfaces/state/wallet";
+import { getWalletService } from "../../resources";
+import { ThemeContext } from "../../state/context/theme";
 
 function ConnectWalletDropdown({
 	isLoading,
@@ -13,10 +14,17 @@ function ConnectWalletDropdown({
 }: IConnectWalletDropdown) {
 	const theme = useContext(ThemeContext);
 
+	const connectWallet = async (wallet: Wallet): Promise<void> => {
+		await getWalletService(wallet.ecosystem).connectWallet(
+			setIsLoading,
+			wallet
+		);
+	};
+
 	return (
 		<Menu
 			as="div"
-			className="flex h-12 w-11/12 flex-col items-center justify-center rounded-lg outline-none"
+			className="flex h-12 w-11/12 max-w-[300px] flex-col items-center justify-center rounded-lg outline-none"
 		>
 			{({ open }) => (
 				<div className="relative h-full w-full">
@@ -26,10 +34,13 @@ function ConnectWalletDropdown({
 								backgroundColor: theme.primaryColor,
 								color: theme.buttonTextColor,
 							}}
-							className="min-h-12 flex w-9/12 items-center justify-center rounded-xl p-3 font-bold opacity-90 outline-none duration-300 ease-in-out hover:opacity-100"
+							className="min-h-12 flex w-full items-center justify-center rounded-xl p-3 font-bold opacity-90 outline-none duration-300 ease-in-out hover:opacity-100"
 						>
 							{isLoading ? (
-								<AiOutlineLoading3Quarters />
+								<AiOutlineLoading3Quarters
+									className="animate-spin"
+									size="22px"
+								/>
 							) : (
 								"Connect Wallet"
 							)}
@@ -45,11 +56,11 @@ function ConnectWalletDropdown({
 							static
 							style={{
 								backgroundColor: theme.dropdownBackgroundColor,
-								// TODO: Figure out how to do "ring-1 ring-dark-200" with in-line styles
+								boxShadow: `0 0 0 1px ${theme.inputOutlineColor}`,
 							}}
 							className={`${
 								open && "relative z-10"
-							} mt-1 max-h-64 overflow-hidden overflow-y-auto rounded-lg outline-none ring-1 ring-dark-200`}
+							} mt-2 overflow-hidden overflow-y-auto rounded-lg outline-none`}
 						>
 							{walletList.map((wallet) => (
 								<Menu.Item key={wallet.label}>
@@ -63,19 +74,14 @@ function ConnectWalletDropdown({
 													? theme.primaryColor
 													: theme.primaryTextColor,
 											}}
-											className="relative flex h-12 cursor-pointer select-none items-center justify-start p-2 pr-4"
-											onChange={() =>
-												getWalletService(
-													wallet.ecosystem
-												).connectWallet(
-													setIsLoading,
-													wallet.type
-												)
+											className="relative flex h-12 w-full cursor-pointer select-none items-center justify-start p-2 pr-4"
+											onClick={() =>
+												connectWallet(wallet)
 											}
 										>
-											<div className="mr-4 flex h-12 w-12 items-center justify-center">
+											<div className="mr-5 flex h-12 w-12 items-center justify-center">
 												<img
-													className="h-7"
+													className="w-8"
 													alt="listedWalletImage"
 													src={wallet.imageSource}
 												/>

@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { ThemeContext } from "../../context/theme";
-import { RootState } from "../../redux/types";
 // import { isAddressValid } from "../../utils/validateAddress";
-import { ITransferButton } from "./types";
+import { ITransferButton } from "../../interfaces/components/transferButton";
+import { RootState } from "../../interfaces/state/rootState";
+import { ThemeContext } from "../../state/context/theme";
 
 function TransferButton({
 	// action,
 	isLoading,
 	amount,
 	maxAmount,
-	nativeBalance,
+	// nativeBalance,
 	// destinationChain,
 	destinationAddress,
 }: ITransferButton) {
@@ -25,7 +25,7 @@ function TransferButton({
 	const checkValidity = async () => {
 		const addressIsValid = false;
 		// if (destinationAddress && destinationChain) {
-		// 	addressIsValid = await isAddressValid(
+		// 	addressIsValid = isAddressValid(
 		// 		destinationAddress,
 		// 		destinationChain.currentEcosystem
 		// 	);
@@ -33,7 +33,7 @@ function TransferButton({
 
 		const validAmount = amount || 0;
 		const validMaxAmount = maxAmount || 0;
-		const validNativeBalance = nativeBalance || 0;
+		// const validNativeBalance = nativeBalance || 0;
 
 		const basicConditions = [
 			!isLoading,
@@ -41,7 +41,7 @@ function TransferButton({
 			currentNetwork?.isSupported,
 			validAmount > 0,
 			validAmount <= validMaxAmount,
-			validNativeBalance > 0,
+			// validNativeBalance > 0,
 		];
 
 		setValid(addressIsValid && basicConditions.every(Boolean));
@@ -57,7 +57,7 @@ function TransferButton({
 		// destinationChain,
 		amount,
 		maxAmount,
-		nativeBalance,
+		// nativeBalance,
 	]);
 
 	return (

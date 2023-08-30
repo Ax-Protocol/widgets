@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 
-import { ThemeContext } from "../../context/theme";
+import { ThemeContext } from "../../state/context/theme";
 
 function Footer() {
 	const theme = useContext(ThemeContext);
@@ -12,14 +12,14 @@ function Footer() {
 				style={{
 					color: hover ? theme.primaryColor : theme.primaryTextColor,
 				}}
-				className="px-3 pt-3 outline-none duration-300 ease-in-out"
+				className="mt-3 px-3 outline-none duration-300 ease-in-out"
 				href="https://www.ax.finance"
 				target="_blank"
 				rel="noopener noreferrer"
 				onMouseEnter={() => setHover(true)}
 				onMouseLeave={() => setHover(false)}
 			>
-				<span className="text-xs">Powered by Ax Protocol</span>
+				<span className="text-x">Powered by Ax Protocol</span>
 			</a>
 		</div>
 	);

@@ -1,13 +1,12 @@
-import { isAddress } from "viem";
+import { Ecosystem } from "../interfaces/state/wallet";
+import { isEvmAddress } from "../resources";
 
-import { Ecosystem } from "../redux/types";
-
-export const isAddressValid = async (
+export const isAddressValid = (
 	address: string,
 	currentEcosystem: Ecosystem
-): Promise<boolean> => {
+): boolean => {
 	if (currentEcosystem === Ecosystem.EVM) {
-		return isAddress(address);
+		return isEvmAddress(address);
 	}
 	// else if (currentEcosystem === Ecosystem.APTOS") {
 	// 	return isAddress(address);

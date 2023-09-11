@@ -30,6 +30,7 @@ function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 	const [successMessage, setSuccessMessage] = useState<string>("");
 	const [errorMessage, setErrorMessage] = useState<string>("");
 	const [amount, setAmount] = useState<bigint>(BigInt(0));
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [amountInput, setAmountInput] = useState<string>("");
 	const [destinationAddress, setDestinationAddress] = useState<string>("");
 	// const [lzScanUrl, setLzScanUrl] = useState<string>("");
@@ -45,9 +46,11 @@ function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 	const [filteredDestinations, setFilteredDestinations] = useState<AxChain[]>(
 		[]
 	);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [bridge, setBridge] = useState<string>("");
 	const maxW = maxWidth ?? 430;
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const getUsxBalance = async () => {
 		// const balance = await getBaseTokenService(ecosystem).getTokenBalance(
 		// 	usxData
@@ -59,6 +62,7 @@ function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 		// getUsxService(currentEcosystem).transfer(setIsLoading, ...)
 	};
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const resetState = () => {
 		setSuccessMessage("");
 		setAmountInput("");

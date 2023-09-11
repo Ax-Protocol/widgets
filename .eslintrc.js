@@ -45,6 +45,7 @@ module.exports = {
 		"simple-import-sort/imports": "error",
 		"simple-import-sort/exports": "error",
 		"@typescript-eslint/no-shadow": "error",
+		"no-nested-ternary": "off",
 		"no-shadow": "off",
 		"import/extensions": "off",
 		"react/button-has-type": "off",

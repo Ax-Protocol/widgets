@@ -20,7 +20,9 @@ export const updateConnectionStatus = (
 	payload: isWalletConnected,
 });
 
-export const updateAddress = (address: string | null): IUpdateAddress => ({
+export const updateAddress = (
+	address: `0x${string}` | null
+): IUpdateAddress => ({
 	type: "UPDATE_ADDRESS",
 	payload: address,
 });

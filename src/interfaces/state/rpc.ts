@@ -1,10 +1,12 @@
+export type RpcUrlMap = Record<number, string>;
+
 export interface RpcState {
-	rpcUrlMap: Record<number, string>;
+	evmRpcUrlMap: RpcUrlMap;
 }
 
-export interface IUpdateRpcUrlMap {
-	type: "UPDATE_RPC_URL_MAP";
-	payload: Record<number, string>;
+export interface IUpdateEvmRpcUrlMap {
+	type: "UPDATE_EVM_RPC_URL_MAP";
+	payload: RpcUrlMap;
 }
 
-export type RpcActions = IUpdateRpcUrlMap;
+export type RpcActions = IUpdateEvmRpcUrlMap;

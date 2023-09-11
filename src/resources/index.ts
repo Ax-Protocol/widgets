@@ -12,8 +12,12 @@ import {
 	fetchEnsAvatar,
 	fetchEnsName,
 	getWalletClient,
+	initializeEvmWalletConfig,
 	switchNetwork,
+	watchAccount,
+	watchNetwork,
 } from "./evmWalletConfig";
+import { getChain } from "./getChain";
 import {
 	getWalletService,
 	registerWalletService,
@@ -29,10 +33,14 @@ export {
 	fetchEnsAvatar,
 	fetchEnsName,
 	formatUnits,
+	getChain,
 	getWalletClient,
 	getWalletService,
+	initializeEvmWalletConfig,
 	isEvmAddress,
 	registerWalletService,
 	switchNetwork,
 	walletServiceRegistry,
+	watchAccount,
+	watchNetwork,
 };

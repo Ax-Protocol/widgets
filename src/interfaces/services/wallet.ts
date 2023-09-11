@@ -19,13 +19,9 @@ export abstract class IWalletService {
 
 	abstract switchNetwork(network: Network): Promise<void>;
 
-	abstract getNativeBalance(address: string): Promise<void>;
+	abstract getNativeBalance(address: `0x${string}`): Promise<void>;
 
-	abstract addTokenToWallet(
-		tokenAddress: string,
-		tokenSymbol: string,
-		tokenDecimals: number,
-		tokenImageSource: string,
-		setTokenAddedMessage: (value: string) => void
-	): Promise<void>;
+	abstract handleAccountChanged(): Promise<void>;
+
+	abstract handleNetworkChanged(): Promise<void>;
 }

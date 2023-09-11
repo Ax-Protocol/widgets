@@ -3,7 +3,7 @@ import { RootAction } from "../../../interfaces/state/rootAction";
 import { RpcState } from "../../../interfaces/state/rpc";
 
 const initialState: RpcState = {
-	rpcUrlMap: {},
+	evmRpcUrlMap: {},
 };
 
 function rpcReducer(
@@ -11,8 +11,8 @@ function rpcReducer(
 	action: RootAction
 ): RpcState {
 	switch (action.type) {
-		case "UPDATE_RPC_URL_MAP":
-			return { ...state, rpcUrlMap: action.payload };
+		case "UPDATE_EVM_RPC_URL_MAP":
+			return { ...state, evmRpcUrlMap: action.payload };
 		default:
 			return state;
 	}

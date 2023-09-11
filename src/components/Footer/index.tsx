@@ -4,7 +4,7 @@ import { ThemeContext } from "../../state/context/theme";
 
 function Footer() {
 	const theme = useContext(ThemeContext);
-	const [hover, setHover] = useState(false);
+	const [hover, setHover] = useState<boolean>(false);
 
 	return (
 		<div className="flex h-12 w-full items-end justify-center">

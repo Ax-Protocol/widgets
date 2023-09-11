@@ -1,7 +1,8 @@
+import { RpcUrlMap } from "../state/rpc";
 import { Theme } from "../state/theme";
 
 export type IUsxTransferWidget = {
-	jsonRpcUrlMap: Record<number, string>; // required
+	evmRpcUrlMap: RpcUrlMap; // required
 	theme?: Theme;
 	maxWidth?: number;
 };

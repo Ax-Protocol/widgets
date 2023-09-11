@@ -18,8 +18,11 @@ import {
 	fetchBalance,
 	fetchEnsAvatar,
 	fetchEnsName,
+	getChain,
 	getWalletClient,
-	// switchNetwork,
+	switchNetwork,
+	watchAccount,
+	watchNetwork,
 } from "../../resources";
 import store from "../../state/redux/store";
 import {
@@ -54,7 +57,7 @@ class EvmWalletService extends IWalletService {
 		return EvmWalletService.instance;
 	}
 
-	// *************** Methods ***************
+	// ***************************************** Methods *****************************************
 	async connectWallet(
 		setIsLoading: (value: boolean) => void,
 		wallet: Wallet
@@ -114,16 +117,12 @@ class EvmWalletService extends IWalletService {
 			this.provider = evmProvider;
 			this.walletClient = evmWalletClient;
 
+			// Subscribe to account and network changes
+			this.handleAccountChanged();
+			this.handleNetworkChanged();
+
 			// Check if user's current network is supported and update global state variable
-			if (connection.chain.unsupported) {
-				store.dispatch(
-					updateCurrentNetwork({
-						ecosystem: Ecosystem.EVM,
-						chainId,
-						isSupported: false,
-					})
-				);
-			} else {
+			if (getChain({ chainId })) {
 				store.dispatch(
 					updateCurrentNetwork({
 						ecosystem: Ecosystem.EVM,
@@ -131,11 +130,19 @@ class EvmWalletService extends IWalletService {
 						isSupported: true,
 					})
 				);
+			} else {
+				store.dispatch(
+					updateCurrentNetwork({
+						ecosystem: Ecosystem.EVM,
+						chainId,
+						isSupported: false,
+					})
+				);
 			}
 
-			// Even though balanceObject.value is already type bigint, we can't store bigint in Redux.
-			// We need to store it as a string, and then cast it back to bigint using BigInt() when
-			// first fetched from Redux in app.
+			// Even though balanceObject.value is already of type bigint, the bigint type cannot be stored
+			// in Redux. It must be stored as a string, and then casted back to bigint using BigInt() when
+			// fetched from Redux in the app.
 			const balanceObject = await fetchBalance({
 				address,
 			});
@@ -150,12 +157,14 @@ class EvmWalletService extends IWalletService {
 			const name: string | null =
 				(await fetchEnsName({
 					address,
+					chainId: 1,
 				})) || null;
 
 			if (name) {
 				avatar =
 					(await fetchEnsAvatar({
 						name: String(name),
+						chainId: 1,
 					})) || null;
 			}
 			ens.name = name;
@@ -204,24 +213,79 @@ class EvmWalletService extends IWalletService {
 	}
 
 	async switchNetwork(network: Network): Promise<void> {
-		console.log(network);
+		const result = await switchNetwork({
+			chainId: network.chainId,
+		});
+
+		if (result.id === network.chainId) {
+			store.dispatch(
+				updateCurrentNetwork({
+					ecosystem: network.ecosystem,
+					chainId: network.chainId,
+					isSupported: network.isSupported,
+				})
+			);
+
+			this.getNativeBalance(store.getState().walletReducer.address!);
+		}
 	}
 
-	async getNativeBalance(address: string): Promise<void> {
-		console.log(address);
+	async getNativeBalance(address: `0x${string}`): Promise<void> {
+		// Even though balanceObject.value is already of type bigint, the bigint type cannot be stored
+		// in Redux. It must be stored as a string, and then casted back to bigint using BigInt() when
+		// fetched from Redux in the app.
+		const balanceObject = await fetchBalance({
+			address,
+		});
+		const nativeBalance = {
+			...balanceObject,
+			value: balanceObject.value.toString(),
+		};
+
+		store.dispatch(updateNativeBalance(nativeBalance));
 	}
 
-	async addTokenToWallet(
-		tokenAddress: string,
-		tokenSymbol: string,
-		tokenDecimals: number,
-		tokenImageSource: string,
-		setTokenAddedMessage: (value: string) => void
-	): Promise<void> {
-		console.log(tokenAddress, tokenSymbol, tokenDecimals, tokenImageSource);
-		setTokenAddedMessage("test");
+	async handleAccountChanged(): Promise<void> {
+		watchAccount((account) => {
+			if (account.address) {
+				store.dispatch(updateAddress(account.address));
+				this.getNativeBalance(account.address);
+			}
+		});
 	}
-	// ***************************************
+
+	async handleNetworkChanged(): Promise<void> {
+		watchNetwork((network) => {
+			// Check if user's current network is supported and update global state
+			if (network.chain?.id) {
+				if (getChain({ chainId: network.chain.id })) {
+					store.dispatch(
+						updateCurrentNetwork({
+							ecosystem: Ecosystem.EVM,
+							chainId: network.chain.id,
+							isSupported: true,
+						})
+					);
+
+					if (store.getState().walletReducer.address) {
+						this.getNativeBalance(
+							store.getState().walletReducer.address!
+						);
+					}
+				} else {
+					store.dispatch(
+						updateCurrentNetwork({
+							ecosystem: Ecosystem.EVM,
+							chainId: network.chain?.id,
+							isSupported: false,
+						})
+					);
+				}
+			}
+		});
+	}
+
+	// *******************************************************************************************
 }
 
 export default EvmWalletService;

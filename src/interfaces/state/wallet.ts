@@ -35,8 +35,9 @@ export type Ens = {
 	avatar: string | null;
 };
 
-// Can't store bigint type in Redux, so it must be casted to bigint
-// using BigInt() when first fetched from Redux in app
+// The 'value' property is of type 'string' because the bigint type cannot
+// be stored in Redux. Whenever 'value' is fetched from Redux in the app,
+// it must be casted to bigint using BigInt().
 export type Balance = {
 	decimals: number;
 	formatted: string;
@@ -46,7 +47,7 @@ export type Balance = {
 
 export interface WalletState {
 	isWalletConnected: boolean;
-	address: string | null;
+	address: `0x${string}` | null;
 	nativeBalance: Balance | null;
 	currentWallet: Wallet | null;
 	currentEcosystem: Ecosystem | null;
@@ -71,7 +72,7 @@ export interface IUpdateCurrentEcosystem {
 
 export interface IUpdateAddress {
 	type: "UPDATE_ADDRESS";
-	payload: string | null;
+	payload: `0x${string}` | null;
 }
 
 export interface IUpdateNativeBalance {

@@ -1,4 +1,6 @@
 import {
+	Chain,
+	Config,
 	configureChains,
 	connect,
 	createConfig,
@@ -7,7 +9,11 @@ import {
 	fetchEnsAvatar,
 	fetchEnsName,
 	getWalletClient,
+	PublicClient,
 	switchNetwork,
+	watchAccount,
+	watchNetwork,
+	WebSocketPublicClient,
 } from "@wagmi/core";
 import {
 	arbitrum,
@@ -29,71 +35,78 @@ import { WalletConnectConnector } from "@wagmi/core/connectors/walletConnect";
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import { publicProvider } from "@wagmi/core/providers/public";
 
-import store from "../state/redux/store";
+import { RpcUrlMap } from "../interfaces/state/rpc";
+import { FallbackTransport } from "./evmInterface";
 
-const { rpcUrlMap } = store.getState().rpcReducer;
+// eslint-disable-next-line import/no-mutable-exports
+let evmWalletConfig: Config<
+	PublicClient<FallbackTransport>,
+	WebSocketPublicClient
+>;
 
-const { chains, publicClient } = configureChains(
-	[
-		mainnet,
-		optimism,
-		arbitrum,
-		polygon,
-		gnosis,
-		celo,
-		avalanche,
-		fantom,
-		bsc,
-	],
-	[
-		// Public, rate-limited RPC URLs
-		publicProvider(),
-
-		// Private RPC URLs =? TODO: Figure out if this works and how it works.
-		jsonRpcProvider({
-			rpc: (chain) => ({
-				http: rpcUrlMap[chain.id],
+export const initializeEvmWalletConfig = (evmRpcUrlMap: RpcUrlMap) => {
+	const { chains, publicClient } = configureChains(
+		[
+			mainnet,
+			optimism,
+			arbitrum,
+			polygon,
+			gnosis,
+			celo,
+			avalanche,
+			fantom,
+			bsc,
+		],
+		[
+			jsonRpcProvider({
+				rpc: (chain: Chain) => ({
+					http: evmRpcUrlMap[chain.id],
+				}),
 			}),
-		}),
-	]
-);
+			publicProvider(),
+		]
+	);
 
-const connectors = [
-	new InjectedConnector({ chains }),
-	new MetaMaskConnector({ chains }),
-	new WalletConnectConnector({
-		options: { projectId: "272999f25199bdefd280fedfc62e9b08" },
-	}),
-	new CoinbaseWalletConnector({
-		options: {
-			appName: "Ax Widgets",
-			appLogoUrl: "https://usx.cash/images/iconAx.svg",
-		},
-	}),
-	new LedgerConnector({
-		options: { projectId: "272999f25199bdefd280fedfc62e9b08" },
-	}),
-	new SafeConnector({
-		chains,
-		options: {
-			allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
-			debug: false,
-		},
-	}),
-];
+	const connectors = [
+		new InjectedConnector({ chains }),
+		new MetaMaskConnector({ chains }),
+		new WalletConnectConnector({
+			options: { projectId: "272999f25199bdefd280fedfc62e9b08" },
+		}),
+		new CoinbaseWalletConnector({
+			options: {
+				appName: "Ax Widgets",
+				appLogoUrl: "https://usx.cash/images/iconAx.svg",
+			},
+		}),
+		new LedgerConnector({
+			options: { projectId: "272999f25199bdefd280fedfc62e9b08" },
+		}),
+		new SafeConnector({
+			chains,
+			options: {
+				allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
+				debug: false,
+			},
+		}),
+	];
+
+	evmWalletConfig = createConfig({
+		autoConnect: false,
+		connectors,
+		publicClient,
+	});
+};
 
 export {
 	connect,
 	disconnect,
+	evmWalletConfig,
 	fetchBalance,
 	fetchEnsAvatar,
 	fetchEnsName,
 	getWalletClient,
 	switchNetwork,
+	watchAccount,
+	watchNetwork,
 };
-
-export const evmWalletConfig = createConfig({
-	autoConnect: false,
-	connectors,
-	publicClient,
-});

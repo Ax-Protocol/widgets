@@ -20,8 +20,4 @@ export abstract class IWalletService {
 	abstract switchNetwork(network: Network): Promise<void>;
 
 	abstract getNativeBalance(address: `0x${string}`): Promise<void>;
-
-	abstract handleAccountChanged(): Promise<void>;
-
-	abstract handleNetworkChanged(): Promise<void>;
 }

@@ -1,5 +1,5 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-use-before-define */
-/* eslint-disable no-empty-function */
 /* eslint-disable no-useless-constructor */
 import { IWalletService } from "../../interfaces/services/wallet";
 import {
@@ -57,8 +57,8 @@ class EvmWalletService extends IWalletService {
 		return EvmWalletService.instance;
 	}
 
-	// ***************************************** Methods *****************************************
-	async connectWallet(
+	// ***************************************** Methods ***************************************** //
+	public async connectWallet(
 		setIsLoading: (value: boolean) => void,
 		wallet: Wallet
 	): Promise<void> {
@@ -118,8 +118,8 @@ class EvmWalletService extends IWalletService {
 			this.walletClient = evmWalletClient;
 
 			// Subscribe to account and network changes
-			this.handleAccountChanged();
-			this.handleNetworkChanged();
+			this._handleAccountChanged();
+			this._handleNetworkChanged();
 
 			// Check if user's current network is supported and update global state variable
 			if (getChain({ chainId })) {
@@ -198,7 +198,7 @@ class EvmWalletService extends IWalletService {
 		setIsLoading(false);
 	}
 
-	async disconnectWallet(): Promise<void> {
+	public async disconnectWallet(): Promise<void> {
 		// Disconnect wallet
 		await disconnect();
 
@@ -212,7 +212,7 @@ class EvmWalletService extends IWalletService {
 		store.dispatch(updateEns(null));
 	}
 
-	async switchNetwork(network: Network): Promise<void> {
+	public async switchNetwork(network: Network): Promise<void> {
 		const result = await switchNetwork({
 			chainId: network.chainId,
 		});
@@ -230,7 +230,7 @@ class EvmWalletService extends IWalletService {
 		}
 	}
 
-	async getNativeBalance(address: `0x${string}`): Promise<void> {
+	public async getNativeBalance(address: `0x${string}`): Promise<void> {
 		// Even though balanceObject.value is already of type bigint, the bigint type cannot be stored
 		// in Redux. It must be stored as a string, and then casted back to bigint using BigInt() when
 		// fetched from Redux in the app.
@@ -245,7 +245,7 @@ class EvmWalletService extends IWalletService {
 		store.dispatch(updateNativeBalance(nativeBalance));
 	}
 
-	async handleAccountChanged(): Promise<void> {
+	private async _handleAccountChanged(): Promise<void> {
 		watchAccount((account) => {
 			if (account.address) {
 				store.dispatch(updateAddress(account.address));
@@ -254,7 +254,7 @@ class EvmWalletService extends IWalletService {
 		});
 	}
 
-	async handleNetworkChanged(): Promise<void> {
+	private async _handleNetworkChanged(): Promise<void> {
 		watchNetwork((network) => {
 			// Check if user's current network is supported and update global state
 			if (network.chain?.id) {
@@ -285,7 +285,7 @@ class EvmWalletService extends IWalletService {
 		});
 	}
 
-	// *******************************************************************************************
+	// ******************************************************************************************* //
 }
 
 export default EvmWalletService;

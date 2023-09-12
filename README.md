@@ -27,24 +27,33 @@ or
 yarn add @ax-protocol/widgets
 ```
 
+## Required Configuration
+
+| Property       | Description                                                        |
+| -------------- | ------------------------------------------------------------------ |
+| `evmRpcUrlMap` | Mapping of EVM JSON-RPC endpoint URL strings, indexed by chain ID. |
+
+## Optional Configuration
+
+| Property   | Description                                 |
+| ---------- | ------------------------------------------- |
+| `theme`    | Object of properties to set custom styling. |
+| `maxWidth` | Number to define custom width, in pixels.   |
+
 ## Usage Example
 
-The only required prop is `jsonRpcUrlMap`. If `maxWidth` or `theme` are not provided, the default values will be used.
-
--   `jsonRpcUrlMap`: Required mapping of chainId to RPC URL.
--   `maxWidth`: Optional number to define a custom maximum width, in pixels.
--   `theme`: Optional object of properties to set custom styling.
+This snippet demonstrates how to implement the UsxTransferWidget component in a React application.
 
 **Note:** The minimum width of the widget is `300px`.
 
 ```jsx
 import { UsxTransferWidget } from "@ax-protocol/widgets";
 
-const Home = () => {
+const YourAppComponent = () => {
 	// Must have length >= 1
-	const jsonRpcUrlMap = {
-		1: ["https://ethereum-rpc-example"],
-		137: ["https://polygon-rpc-example"],
+	const evmRpcUrlMap = {
+		1: "https://ethereum-rpc-example",
+		137: "https://polygon-rpc-example",
 		// ... more Ax-supported chains
 	};
 
@@ -67,7 +76,7 @@ const Home = () => {
 	return (
 		<div>
 			<UsxTransferWidget
-				jsonRpcUrlMap={jsonRpcUrlMap}
+				evmRpcUrlMap={evmRpcUrlMap}
 				maxWidth={360} // pixels
 				theme={theme}
 			/>
@@ -75,7 +84,7 @@ const Home = () => {
 	);
 };
 
-export default Home;
+export default YourAppComponent;
 ```
 
 ## License

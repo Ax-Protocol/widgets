@@ -60,7 +60,6 @@ function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 	const [bridge, setBridge] = useState<Bridge | null>(null);
 	const maxW = maxWidth ?? 430;
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const getUsxBalance = async () => {
 		const balance = await getTokenService(
 			currentEcosystem!
@@ -82,7 +81,6 @@ function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 		);
 	};
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const resetState = () => {
 		setSuccessMessage("");
 		setAmountInput("");

@@ -3,9 +3,9 @@ import { isEvmAddress } from "../resources";
 
 export const isAddressValid = (
 	address: `0x${string}`,
-	currentEcosystem: Ecosystem
+	ecosystem: Ecosystem
 ): boolean => {
-	if (currentEcosystem === Ecosystem.EVM) {
+	if (ecosystem === Ecosystem.EVM) {
 		return isEvmAddress(address);
 	}
 	// else if (currentEcosystem === Ecosystem.APTOS") {

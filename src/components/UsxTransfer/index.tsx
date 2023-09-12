@@ -2,20 +2,32 @@ import React, { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { chainData } from "../../data/chains";
+import { usx } from "../../data/tokens";
 import { IUsxTrasfer } from "../../interfaces/components/usxTransfer";
+import { Bridge } from "../../interfaces/data/bridges";
 import { AxChain } from "../../interfaces/data/chains";
 import { RootState } from "../../interfaces/state/rootState";
 import { Ecosystem } from "../../interfaces/state/wallet";
-import { getChain, getWalletService } from "../../resources";
+import {
+	getChain,
+	getTokenService,
+	getUsxService,
+	getWalletService,
+} from "../../resources";
 import { ThemeContext } from "../../state/context/theme";
 import { filterDestinations } from "../../utils/filterDestinations";
+import { getTokenDisplayUnits } from "../../utils/getTokenDisplayUnits";
 import { validateBridgeCompatibility } from "../../utils/validateBridgeCompatibility";
+import AddressInput from "../AddressInput";
 import ChainDropdown from "../ChainDropdown";
 import ConnectWalletDropdown from "../ConnectWalletDropdown";
+import CurrencyInput from "../CurrencyInput";
 import Footer from "../Footer";
 import Header from "../Header";
+import ResetButton from "../ResetButton";
 import ReverseChainSelection from "../ReverseChainSelection";
 import TransferButton from "../TransferButton";
+import TransferStatus from "../TransferStatus";
 
 function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 	const {
@@ -30,12 +42,11 @@ function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 	const [successMessage, setSuccessMessage] = useState<string>("");
 	const [errorMessage, setErrorMessage] = useState<string>("");
 	const [amount, setAmount] = useState<bigint>(BigInt(0));
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [amountInput, setAmountInput] = useState<string>("");
 	const [destinationAddress, setDestinationAddress] = useState<string>("");
-	// const [lzScanUrl, setLzScanUrl] = useState<string>("");
-	// const [txHash, setTxHash] = useState<string>("");
-	// const [usxBalance, setUsxBalance] = useState<number>(0);
+	const [lzScanUrl, setLzScanUrl] = useState<string>("");
+	const [txHash, setTxHash] = useState<`0x${string}` | null>(null);
+	const [usxBalance, setUsxBalance] = useState<bigint>(BigInt(0));
 	const [selectedSourceChain, setSelectedSourceChain] = useState<AxChain>(
 		isWalletConnected && currentNetwork?.isSupported
 			? getChain({ chainId: currentNetwork?.chainId })!
@@ -46,20 +57,29 @@ function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 	const [filteredDestinations, setFilteredDestinations] = useState<AxChain[]>(
 		[]
 	);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [bridge, setBridge] = useState<string>("");
+	const [bridge, setBridge] = useState<Bridge | null>(null);
 	const maxW = maxWidth ?? 430;
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const getUsxBalance = async () => {
-		// const balance = await getBaseTokenService(ecosystem).getTokenBalance(
-		// 	usxData
-		// );
-		// setUsxBalance(balance);
+		const balance = await getTokenService(
+			currentEcosystem!
+		).getTokenBalance(usx);
+		setUsxBalance(balance);
 	};
 
 	const initiateTransfer: () => Promise<void> = async () => {
-		// getUsxService(currentEcosystem).transfer(setIsLoading, ...)
+		getUsxService(currentEcosystem!).transfer(
+			setIsLoading,
+			setSuccessMessage,
+			setErrorMessage,
+			selectedDestinationChain,
+			destinationAddress as `0x${string}`,
+			amount,
+			setLzScanUrl,
+			setTxHash,
+			bridge!
+		);
 	};
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -78,7 +98,7 @@ function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 				getChain({ chainId: currentNetwork?.chainId })!
 			);
 
-			// getUsxBalance();
+			getUsxBalance();
 
 			if (currentNetwork?.chainId === selectedDestinationChain.chainId) {
 				const currentNetworkIndex = chainData.findIndex(
@@ -156,7 +176,7 @@ function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 	useEffect(() => {
 		if (isWalletConnected && currentNetwork?.isSupported) {
 			if (successMessage) {
-				// getUsxBalance();
+				getUsxBalance();
 				getWalletService(currentEcosystem!).getNativeBalance(address!);
 			}
 		}
@@ -165,7 +185,7 @@ function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 	// First render
 	useEffect(() => {
 		if (isWalletConnected && currentNetwork?.isSupported) {
-			// 	getUsxBalance();
+			getUsxBalance();
 			getWalletService(currentEcosystem!).getNativeBalance(address!);
 		}
 		setFilteredDestinations(
@@ -198,6 +218,27 @@ function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 				className="flex w-full flex-shrink flex-col items-center justify-center rounded-xl p-5 ring-1"
 			>
 				<Header />
+				<span className="ml-5 self-start">USX Amount</span>
+				<CurrencyInput
+					amountInput={amountInput}
+					setAmountInput={setAmountInput}
+					setAmount={setAmount}
+					isLoading={isLoading}
+					maxAmount={usxBalance}
+					token={usx}
+					setErrorMessage={setErrorMessage}
+				/>
+				{isWalletConnected ? (
+					<span
+						style={{ color: theme.secondaryTextColor }}
+						className="mr-6 mt-1 min-w-fit self-end text-xs"
+					>
+						Balance:{" "}
+						{usxBalance
+							? getTokenDisplayUnits(usxBalance, usx.decimals)
+							: "0"}
+					</span>
+				) : null}
 				<span className="ml-5 mt-3 self-start">Source Chain</span>
 				<ChainDropdown
 					chainsList={chainData}
@@ -221,9 +262,39 @@ function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 					selectedChain={selectedDestinationChain}
 					setSelectedChain={setSelectedDestinationChain}
 				/>
+				<span className="ml-5 mt-3 self-start">
+					Destination Address
+				</span>
+				<AddressInput
+					destinationChain={selectedDestinationChain}
+					addressInput={destinationAddress}
+					setAddressInput={setDestinationAddress}
+					isLoading={isLoading}
+					setErrorMessage={setErrorMessage}
+				/>
 				{successMessage ? (
 					<div className="mt-3 flex flex-col items-center justify-center">
-						<span>success stuff</span>
+						<span className="text-green-accent">
+							{successMessage}
+						</span>
+						<div className="mt-2 w-full">
+							<TransferStatus
+								lzScanUrl={lzScanUrl}
+								txHash={txHash!}
+								sourceChain={selectedSourceChain}
+								destChain={selectedDestinationChain}
+								destAddress={
+									destinationAddress as `0x${string}`
+								}
+								bridge={bridge!}
+							/>
+						</div>
+						<div className="mt-2 w-full">
+							<ResetButton
+								label="Make another transfer"
+								resetState={resetState}
+							/>
+						</div>
 					</div>
 				) : (
 					<div className="mt-3 flex w-full flex-col items-center justify-center">
@@ -233,10 +304,13 @@ function UsxTransfer({ maxWidth }: IUsxTrasfer) {
 									action={initiateTransfer}
 									isLoading={isLoading}
 									amount={amount}
-									maxAmount={3} // usxBalance
-									// nativeBalance={BigInt(nativeBalance!.value)}
-									// destinationChain={}
-									destinationAddress={destinationAddress}
+									maxAmount={usxBalance}
+									nativeBalance={BigInt(nativeBalance!.value)}
+									destinationChain={selectedDestinationChain}
+									destinationAddress={
+										destinationAddress as `0x${string}`
+									}
+									errorMessage={errorMessage}
 								/>
 								{BigInt(nativeBalance!.value) === BigInt(0) ? (
 									<span className="mt-3 text-red-accent">

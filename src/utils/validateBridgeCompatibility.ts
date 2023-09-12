@@ -1,3 +1,4 @@
+import { Bridge } from "../interfaces/data/bridges";
 import { AxChain } from "../interfaces/data/chains";
 
 export const validateBridgeCompatibility = (
@@ -23,13 +24,13 @@ export const validateBridgeCompatibility = (
 
 	if (sourceHasWormhole && destinationHasWormhole) {
 		if (!sourceHasLayerZero || !destinationHasLayerZero) {
-			return "wh";
+			return Bridge.WH;
 		}
 	}
 
 	if (sourceHasLayerZero && destinationHasLayerZero) {
 		if (!sourceHasWormhole || !destinationHasWormhole) {
-			return "lz";
+			return Bridge.LZ;
 		}
 	}
 

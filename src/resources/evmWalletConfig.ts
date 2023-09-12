@@ -10,10 +10,13 @@ import {
 	fetchEnsName,
 	getWalletClient,
 	PublicClient,
+	readContract,
 	switchNetwork,
+	waitForTransaction,
 	watchAccount,
 	watchNetwork,
 	WebSocketPublicClient,
+	writeContract,
 } from "@wagmi/core";
 import {
 	arbitrum,
@@ -106,7 +109,10 @@ export {
 	fetchEnsAvatar,
 	fetchEnsName,
 	getWalletClient,
+	readContract,
 	switchNetwork,
+	waitForTransaction,
 	watchAccount,
 	watchNetwork,
+	writeContract,
 };

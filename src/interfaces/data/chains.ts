@@ -15,9 +15,9 @@ export type AxChain = {
 	lzChainId?: number;
 	whChainId?: number;
 	priorityBridge: Bridge;
-	lzEndpoint?: string;
-	whCoreBridge?: string;
-	layerZeroBridge?: string;
-	wormholeBridge?: string;
-	usxAddress: string;
+	lzEndpoint?: `0x${string}`;
+	whCoreBridge?: `0x${string}`;
+	layerZeroBridge?: `0x${string}`;
+	wormholeBridge?: `0x${string}`;
+	usxAddress: `0x${string}`;
 };

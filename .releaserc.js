@@ -21,14 +21,14 @@ module.exports = {
 			},
 		],
 		"@semantic-release/release-notes-generator",
+		"@semantic-release/changelog",
+		"@semantic-release/npm",
 		[
 			"@semantic-release/git",
 			{
-				message:
-					"chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
+				message: "chore(release): ${nextRelease.version} [skip ci]",
 			},
 		],
-		"@semantic-release/npm",
 		"@semantic-release/github",
 	],
 };

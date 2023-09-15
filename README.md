@@ -2,6 +2,7 @@
 
 ![Static Badge](https://img.shields.io/badge/license-MIT-yellow)
 ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/Ax-Protocol/widgets/ci.yml?label=tests)
+[![Latest npm version](https://img.shields.io/npm/v/%40ax-protocol%2Fwidgets?logo=npm&label=latest&color=blue)](https://www.npmjs.com/package/@ax-protocol/widgets)
 
 ## Overview
 

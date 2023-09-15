@@ -1,6 +1,6 @@
 {
 	"name": "@ax-protocol/widgets",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A set of React components that facilitate integration of Ax Protocol features in compact, adjustable UI elements.",
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.js",
